@@ -3,10 +3,8 @@ package si.um.feri.osebe.vao;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.text.Normalizer;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.regex.Pattern;
 
@@ -37,20 +35,17 @@ public class Oseba {
     private LocalDate datumRojstva=LocalDate.now();
 
     public long getStarost() {
-        LocalDateTime trenutni=LocalDateTime.now();
-        return ChronoUnit.YEARS.between(datumRojstva, trenutni);
+        long ret=ChronoUnit.YEARS.between(datumRojstva, LocalDate.now());
+        if (ret<0) ret=0;
+        return ret;
     }
 
     public boolean staVSorodu(Oseba oseba2) {
         if (oseba2 == null || this.getPriimek() == null || oseba2.getPriimek() == null) {
             return false;
         }
-
-        // Normalizacija priimkov - pretvorba posebnih znakov
         String priimek1 = normalize(this.getPriimek());
         String priimek2 = normalize(oseba2.getPriimek());
-
-        // Primerjava neobčutljiva na velike/male črke
         return priimek1.equalsIgnoreCase(priimek2);
     }
 
